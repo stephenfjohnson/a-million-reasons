@@ -51,6 +51,7 @@ const ReasonsList = () => {
             </Box>
           );
         })}
+        <p>{data.reasonsList.items.length} Reasons</p>
       </Wrapper>
     </Section>
   );
