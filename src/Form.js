@@ -76,11 +76,7 @@ const Form = () => {
   return (
     <FormStyle onSubmit={handleSubmit(onSubmit)}>
       <p>What is your reason for staying?</p>
-      <textarea
-        name="reason"
-        placeholder="Add a reason to live!"
-        ref={register}
-      />
+      <textarea name="reason" placeholder="Reason" ref={register} />
       {errors.reason && errors.reason.message}
 
       <p>Country</p>

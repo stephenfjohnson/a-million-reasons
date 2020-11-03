@@ -39,7 +39,7 @@ const ReasonsList = () => {
       <Wrapper ref={messageRef}>
         {data.reasonsList.items.map((item, key) => {
           const seed = Math.floor(
-            Math.abs(Math.sin(key) * 16777215) % 16777215
+            Math.abs(Math.sin(key + 1) * 16777215) % 16777215
           ).toString(16);
           return (
             <Box key={key} style={{ border: `4px solid #${seed}` }}>
@@ -73,7 +73,7 @@ const Wrapper = styled.div`
   padding: 10px;
   display: flex;
   max-width: 400px;
-  padding-top: 100px;
+  padding-top: 120px;
   @media only screen and (max-width: 600px) {
     padding-top: 150px;
   }
