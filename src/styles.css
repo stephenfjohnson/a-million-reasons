@@ -1,0 +1,16 @@
+.App {
+  font-family: sans-serif;
+}
+
+html {
+  font-family: sans-serif;
+}
+
+body {
+  background: #161616;
+  color: white;
+}
+
+button {
+  cursor: pointer;
+}
