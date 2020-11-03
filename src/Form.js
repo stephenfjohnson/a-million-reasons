@@ -8,7 +8,7 @@ import { ModalContext } from "./ModalContext";
 import Filter from "bad-words";
 
 const filter = new Filter();
-filter.addWords("kill", "Kill", "murder", "Murder");
+filter.addWords("kill", "Kill", "murder", "Murder", "death", "Death");
 
 const REASON_CREATE = gql`
   mutation CreateReason(
