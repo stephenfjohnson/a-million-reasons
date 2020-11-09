@@ -31,7 +31,7 @@ const ModalStyle = styled.div`
   height: 100vh;
   justify-content: center;
   align-items: center;
-  background: rgba(0, 0, 0, 0.8);
+  background: rgba(0, 0, 0, 0.9);
   z-index: 2;
   button.close {
     background: transparent;

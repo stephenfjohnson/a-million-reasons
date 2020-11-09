@@ -87,6 +87,11 @@ const Form = () => {
       <input name="initials" placeholder="Your Initails" ref={register} />
       {errors.initials && errors.initials.message}
 
+      <p style={{ fontSize: "12px" }}>
+        Your submission is anonymous but it may be so awesome that we will want
+        to share it on social media and print materials.
+      </p>
+
       <button type="submit">Submit &#9829;</button>
     </FormStyle>
   );
@@ -98,6 +103,8 @@ const FormStyle = styled.form`
   max-width: 500px;
   width: 100%;
   margin: 0 auto;
+  padding: 10px;
+  box-sizing: border-box;
   textarea {
     border-radius: 10px;
     width: 100%;
