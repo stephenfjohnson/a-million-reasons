@@ -155,17 +155,17 @@ const ReasonsList = () => {
   // console.log(data.reasonsList.items);
   // console.log(data.reasonsList.items.length);
 
-  // const ListContainer = ({ listRef, children, className, style }) => (
-  //   <div ref={listRef} className={className} style={{ ...style, marginTop: "150px" }}>
-  //     {children}
-  //   </div>
-  // );
+  const ListContainer = ({ listRef, children, className, style }) => (
+    <div ref={listRef} className={className} style={{ ...style, paddingTop: "150px" }}>
+      {children}
+    </div>
+  );
 
   return (
     <Section>
       <Wrapper>
         <Virtuoso
-          // ListContainer={ListContainer}
+          ListContainer={ListContainer}
           overscan={200}
           style={{ width: "100%", height: "100%", paddingTop: "50px" }}
           totalCount={data.reasonsList.items.length}
