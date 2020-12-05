@@ -16,13 +16,10 @@
     "react-hook-form": "6.9.6",
     "react-paginate": "6.5.0",
     "react-scripts": "3.4.3",
-    "react-virtualized-auto-sizer": "1.0.2",
     "react-virtuoso": "0.20.3",
-    "react-window": "1.8.6",
     "resize-observer-polyfill": "1.5.1",
     "shortid": "2.2.16",
     "styled-components": "5.2.0",
-    "virtuoso": "0.3.5",
     "yup": "0.29.3"
   },
   "devDependencies": {

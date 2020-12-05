@@ -1,8 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
-import usePageBottom from "./usePageBottom";
-import { FixedSizeList as List } from "react-window";
-import AutoSizer from "react-virtualized-auto-sizer";
 import { Virtuoso } from "react-virtuoso";
 
 import { gql, useQuery, useMutation } from "@apollo/client";
@@ -133,7 +130,9 @@ const ReasonsList = () => {
     return (
       <Section>
         <Wrapper>
-          <p>Loading...</p>
+          <Center>
+            <p>Loading Reasons...</p>
+          </Center>
         </Wrapper>
       </Section>
     );
@@ -202,6 +201,11 @@ const ReasonsList = () => {
     </Section>
   );
 };
+
+const Center = styled.div`
+  justify-content: center;
+  align-items: center;
+`;
 
 const Reasons = () => {
   return <ReasonsList />;
