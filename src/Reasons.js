@@ -155,18 +155,18 @@ const ReasonsList = () => {
   // console.log(data.reasonsList.items);
   // console.log(data.reasonsList.items.length);
 
-  const ListContainer = ({ listRef, children, className, style }) => (
-    <div ref={listRef} className={className} style={{ ...style, marginTop: "150px" }}>
-      {children}
-    </div>
-  );
+  // const ListContainer = ({ listRef, children, className, style }) => (
+  //   <div ref={listRef} className={className} style={{ ...style, marginTop: "150px" }}>
+  //     {children}
+  //   </div>
+  // );
 
   return (
     <Section>
       <Wrapper>
         <Virtuoso
-          ListContainer={ListContainer}
-          overscan={400}
+          // ListContainer={ListContainer}
+          overscan={200}
           style={{ width: "100%", height: "100%", paddingTop: "50px" }}
           totalCount={data.reasonsList.items.length}
           item={(index) => {
@@ -175,29 +175,28 @@ const ReasonsList = () => {
             );
 
             return (
-              <Box
-                key={index}
-                style={{ border: `4px solid #${seed}` }}
-                onClick={() => setPressedReason(items[index].id)}
-              >
-                <Flag
-                  onClick={() => onFlag(items[index].item.id)}
-                  style={{ display: pressedReason === items[index].id ? "flex" : "none" }}
+              <BoxWrapper>
+                <Box
+                  key={index}
+                  style={{ border: `4px solid #${seed}` }}
+                  onClick={() => setPressedReason(items[index].id)}
                 >
-                  <FlagSVG />
-                  <p>report</p>
-                </Flag>
-                <ReasonText>{items[index].reason}</ReasonText>
-                <ReasonInfo>
-                  <p>{items[index].initials}</p>
-                  <p>{items[index].country}</p>
-                </ReasonInfo>
-              </Box>
+                  <Flag
+                    onClick={() => onFlag(items[index].item.id)}
+                    style={{ display: pressedReason === items[index].id ? "flex" : "none" }}
+                  >
+                    <FlagSVG />
+                    <p>report</p>
+                  </Flag>
+                  <ReasonText>{items[index].reason}</ReasonText>
+                  <ReasonInfo>
+                    <p>{items[index].initials}</p>
+                    <p>{items[index].country}</p>
+                  </ReasonInfo>
+                </Box>
+              </BoxWrapper>
             );
           }}
-          // footer={() => (
-          //   <div style={{ padding: "1rem", textAlign: "center" }}>-- end reached --</div>
-          // )}
         />
       </Wrapper>
       <Count>
@@ -226,18 +225,8 @@ const Section = styled.section`
 
 const Wrapper = styled.div`
   padding: 10px;
-  display: absolute;
   max-width: 400px;
-  top: 0;
-  left: 0;
-  /* margin-top: 120px; */
-  /* background: red; */
-  /* margin-top: 50px; */
   height: 100vh;
-  @media only screen and (max-width: 600px) {
-    /* margin-top: 150px; */
-  }
-
   width: 100%;
   flex-direction: column;
 `;
@@ -253,10 +242,13 @@ const Count = styled.div`
   padding: 5px;
 `;
 
+const BoxWrapper = styled.div`
+  padding-bottom: 40px;
+`;
+
 const Box = styled.div`
   padding: 10px 30px;
   border-radius: 20px;
-  margin-bottom: 40px;
   position: relative;
   -webkit-box-shadow: 0px 16px 22px -5px #000000;
   box-shadow: 0px 16px 22px -5px #000000;
