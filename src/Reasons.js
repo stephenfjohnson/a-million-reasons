@@ -1,5 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
+import usePageBottom from "./usePageBottom";
+import { FixedSizeList as List } from "react-window";
+import AutoSizer from "react-virtualized-auto-sizer";
+import { Virtuoso } from "react-virtuoso";
 
 import { gql, useQuery, useMutation } from "@apollo/client";
 
@@ -11,9 +15,25 @@ const FlagSVG = (props) => {
   );
 };
 
+// const REASONS_LIST = gql`
+//   query GetReasonsList {
+//     reasonsList(orderBy: createdAt_DESC) {
+//       count
+//       items {
+//         country
+//         id
+//         initials
+//         reason
+//         reported
+//       }
+//     }
+//   }
+// `;
+
 const REASONS_LIST = gql`
-  query GetReasonsList {
-    reasonsList {
+  query GetReasonsList($skip: Int, $first: Int) {
+    reasonsList(skip: $skip, first: $first, orderBy: createdAt_DESC) {
+      count
       items {
         country
         id
@@ -35,13 +55,17 @@ const REASON_UPDATE = gql`
 `;
 
 const ReasonsList = () => {
-  const messageRef = useRef();
-  const { loading, error, data } = useQuery(REASONS_LIST);
+  const [pressedReason, setPressedReason] = useState(null);
+  const { loading, error, data, refetch, fetchMore } = useQuery(REASONS_LIST, {
+    variables: {
+      skip: 0,
+      first: 4000
+    }
+  });
+
   const [updateReason] = useMutation(REASON_UPDATE, {
     refetchQueries: ["GetReasonsList"]
   });
-
-  const [pressedReason, setPressedReason] = useState(null);
 
   const onFlag = (id) => {
     console.log(id);
@@ -53,52 +77,127 @@ const ReasonsList = () => {
     });
   };
 
-  useEffect(() => {
-    if (messageRef.current) {
-      messageRef.current.scrollIntoView({
-        behavior: "smooth",
-        block: "end",
-        inline: "nearest"
-      });
-    }
-    return;
-  }, [data]);
+  // const onFetchMore = () => {
+  //   // const offset = data && data.reasonsList.items ? data.reasonsList.items.length : 0;
+  //   console.log(data.reasonsList.items.length);
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error :(</p>;
+  //   refetch({
+  //     variables: {
+  //       first: data.reasonsList.items.length + 10
+  //     }
+  //   });
+  //   // fetchMore({
+  //   //   variables: {
+  //   //     // skip: data && data.reasonsList.items ? data.reasonsList.items.length : 0
+  //   //     first: data.reasonsList.items.length + 10
+  //   //   }
+  //   // });
+  // };
+
+  // const isPageBottom = usePageBottom();
+
+  // useEffect(() => {
+  //   // if no data or user hasn't scroll to the bottom, don't get more data
+  //   // if (!isPageBottom || !data) return;
+  //   // otherwise, get more posts
+  //   console.log(`Fetching More Posts`);
+  //   // onFetchMore();
+  //   setFirstItems(firstItems + 10);
+  //   console.log(firstItems);
+
+  //   // refetch();
+
+  //   // fetchMore({
+  //   //   variables: {
+  //   //     // skip: data && data.reasonsList.items ? data.reasonsList.items.length : 0,
+  //   //     // skip: data && data.reasonsList.items ? data.reasonsList.items.length : 0,
+  //   //     skip: 50,
+  //   //     // first: firstItems
+  //   //     first: 50
+  //   //   }
+  //   // });
+  // }, []);
+
+  // useEffect(() => {
+  // if (messageRef.current) {
+  //   messageRef.current.scrollIntoView({
+  //     behavior: "smooth",
+  //     block: "end",
+  //     inline: "nearest"
+  //   });
+  // }
+  // return;
+  // }, [data]);
+
+  if (loading)
+    return (
+      <Section>
+        <Wrapper>
+          <p>Loading...</p>
+        </Wrapper>
+      </Section>
+    );
+  if (error)
+    return (
+      <Section>
+        <Wrapper>
+          <p>Error...</p>
+        </Wrapper>
+      </Section>
+    );
+
+  const items = data.reasonsList.items;
+
+  console.log(data.reasonsList.items);
+  console.log(data.reasonsList.items.length);
+
+  const ListContainer = ({ listRef, children, className, style }) => (
+    <div ref={listRef} className={className} style={{ ...style, marginTop: "150px" }}>
+      {children}
+    </div>
+  );
 
   return (
     <Section>
-      <Wrapper ref={messageRef}>
-        {data.reasonsList.items.map((item, key) => {
-          if (item.reported) {
-            return null;
-          }
+      <Wrapper>
+        <Virtuoso
+          ListContainer={ListContainer}
+          style={{ width: "100%", height: "100%", paddingTop: "50px" }}
+          totalCount={100}
+          item={(index) => {
+            const seed = Math.floor(Math.abs(Math.sin(index + 1) * 16777215) % 16777215).toString(
+              16
+            );
 
-          const seed = Math.floor(Math.abs(Math.sin(key + 1) * 16777215) % 16777215).toString(16);
-          return (
-            <Box
-              key={key}
-              style={{ border: `4px solid #${seed}` }}
-              onClick={() => setPressedReason(item.id)}
-            >
-              <Flag
-                onClick={() => onFlag(item.id)}
-                style={{ display: pressedReason === item.id ? "flex" : "none" }}
+            return (
+              <Box
+                key={index}
+                style={{ border: `4px solid #${seed}` }}
+                onClick={() => setPressedReason(items[index].id)}
               >
-                <FlagSVG />
-                <p>report</p>
-              </Flag>
-              <ReasonText>{item.reason}</ReasonText>
-              <ReasonInfo>
-                <p>{item.initials}</p>
-                <p>{item.country}</p>
-              </ReasonInfo>
-            </Box>
-          );
-        })}
-        <p>{data.reasonsList.items.length} Reasons</p>
+                <Flag
+                  onClick={() => onFlag(items[index].item.id)}
+                  style={{ display: pressedReason === items[index].id ? "flex" : "none" }}
+                >
+                  <FlagSVG />
+                  <p>report</p>
+                </Flag>
+                <ReasonText>{items[index].reason}</ReasonText>
+                <ReasonInfo>
+                  <p>{items[index].initials}</p>
+                  <p>{items[index].country}</p>
+                </ReasonInfo>
+              </Box>
+            );
+          }}
+          footer={() => (
+            <div style={{ padding: "1rem", textAlign: "center" }}>-- end reached --</div>
+          )}
+        />
       </Wrapper>
+      <Count>
+        <div>{data.reasonsList.count} Reasons</div>
+      </Count>
     </Section>
   );
 };
@@ -117,15 +216,31 @@ const Section = styled.section`
 
 const Wrapper = styled.div`
   padding: 10px;
-  display: flex;
+  display: absolute;
   max-width: 400px;
-  padding-top: 120px;
+  top: 0;
+  left: 0;
+  /* margin-top: 120px; */
+  /* background: red; */
+  /* margin-top: 50px; */
+  height: 100vh;
   @media only screen and (max-width: 600px) {
-    padding-top: 150px;
+    /* margin-top: 150px; */
   }
 
   width: 100%;
   flex-direction: column;
+`;
+
+const Count = styled.div`
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  color: white;
+  z-index: 10;
+  background: black;
+  border-top-right-radius: 10px;
+  padding: 5px;
 `;
 
 const Box = styled.div`
