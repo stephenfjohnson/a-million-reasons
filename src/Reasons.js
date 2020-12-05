@@ -148,8 +148,8 @@ const ReasonsList = () => {
 
   const items = data.reasonsList.items;
 
-  console.log(data.reasonsList.items);
-  console.log(data.reasonsList.items.length);
+  // console.log(data.reasonsList.items);
+  // console.log(data.reasonsList.items.length);
 
   const ListContainer = ({ listRef, children, className, style }) => (
     <div ref={listRef} className={className} style={{ ...style, marginTop: "150px" }}>
@@ -162,8 +162,9 @@ const ReasonsList = () => {
       <Wrapper>
         <Virtuoso
           ListContainer={ListContainer}
+          overscan={400}
           style={{ width: "100%", height: "100%", paddingTop: "50px" }}
-          totalCount={100}
+          totalCount={data.reasonsList.items.length}
           item={(index) => {
             const seed = Math.floor(Math.abs(Math.sin(index + 1) * 16777215) % 16777215).toString(
               16
@@ -190,9 +191,9 @@ const ReasonsList = () => {
               </Box>
             );
           }}
-          footer={() => (
-            <div style={{ padding: "1rem", textAlign: "center" }}>-- end reached --</div>
-          )}
+          // footer={() => (
+          //   <div style={{ padding: "1rem", textAlign: "center" }}>-- end reached --</div>
+          // )}
         />
       </Wrapper>
       <Count>
