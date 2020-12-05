@@ -77,6 +77,7 @@ const ReasonsList = () => {
         reported: true
       }
     });
+    // refetch();
   };
 
   // const onFetchMore = () => {
@@ -182,7 +183,7 @@ const ReasonsList = () => {
                   onClick={() => setPressedReason(items[index].id)}
                 >
                   <Flag
-                    onClick={() => onFlag(items[index].item.id)}
+                    onClick={() => onFlag(items[index].id)}
                     style={{ display: pressedReason === items[index].id ? "flex" : "none" }}
                   >
                     <FlagSVG />
