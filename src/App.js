@@ -12,6 +12,9 @@ const App = () => {
     <div className="App">
       <Header>
         <h1>A Million Reasons To Stay Alive</h1>
+        <p>
+          Made By <a href="https://www.tiktok.com/@karlynnbekind">KarlynnBeKind</a>
+        </p>
       </Header>
 
       <Reasons />
@@ -47,7 +50,7 @@ const Header = styled.header`
   top: 0;
   left: 0%;
   width: 100%;
-  padding: 10px 20px;
+  padding: 20px 20px;
   box-sizing: border-box;
   border-bottom: 1px solid grey;
   -webkit-backdrop-filter: saturate(180%) blur(5px);
@@ -57,7 +60,7 @@ const Header = styled.header`
     font-size: 30px;
     text-transform: uppercase;
     text-align: center;
-    margin-bottom: 30px;
+    margin: 0 0 4px 0;
     background-image: -webkit-gradient(
       linear,
       left top,
@@ -67,13 +70,7 @@ const Header = styled.header`
       color-stop(71%, #fcd65a),
       to(#fff)
     );
-    background-image: linear-gradient(
-      90deg,
-      #e84393,
-      #f28874 38%,
-      #fcd65a 71%,
-      #fff
-    );
+    background-image: linear-gradient(90deg, #e84393, #f28874 38%, #fcd65a 71%, #fff);
     font-weight: 900;
     text-align: center;
     -webkit-background-clip: text;
@@ -82,5 +79,10 @@ const Header = styled.header`
   }
   p {
     text-align: center;
+    margin: 0;
+    font-size: 10px;
+    a {
+      color: #e38b7a;
+    }
   }
 `;
