@@ -29,7 +29,12 @@ const FlagSVG = (props) => {
 
 const REASONS_LIST = gql`
   query GetReasonsList($skip: Int, $first: Int) {
-    reasonsList(skip: $skip, first: $first, orderBy: createdAt_DESC) {
+    reasonsList(
+      skip: $skip
+      first: $first
+      orderBy: createdAt_DESC
+      filter: { reported: { is_empty: true } }
+    ) {
       count
       items {
         country
