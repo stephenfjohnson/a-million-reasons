@@ -1,12 +1,18 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import "./styles.css";
 import Form from "./Form";
 import Reasons from "./Reasons";
 import styled from "styled-components";
 import { ModalContext } from "./ModalContext";
+import ReactGA from "react-ga";
 
 const App = () => {
   const { handleModal } = useContext(ModalContext);
+
+  useEffect(() => {
+    ReactGA.initialize("G-0CEN6QXHK4");
+    ReactGA.pageview(window.location.pathname);
+  });
 
   return (
     <div className="App">
