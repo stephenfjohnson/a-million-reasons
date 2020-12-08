@@ -114,9 +114,7 @@ const RandomPage = () => {
 
   const item = data.reasonsList.items[0];
 
-  const seed = Math.floor(
-    Math.abs(Math.sin(data.reasonsList.count + 1) * 16777215) % 16777215
-  ).toString(16);
+  const seed = Math.floor(Math.abs(Math.sin(Date.now() + 1) * 16777215) % 16777215).toString(16);
 
   return (
     <Section>
