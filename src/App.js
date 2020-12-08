@@ -8,6 +8,7 @@ import styled from "styled-components";
 import Percentage from "./Percentage";
 import Hotline from "./Hotline";
 import Random from "./Random";
+import Shared from "./Shared";
 import { ModalContext } from "./ModalContext";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 
@@ -68,6 +69,7 @@ const App = () => {
           <Route path="/hotline">
             <Hotline />
           </Route>
+          <Route path="/:id" children={<Shared />} />
         </Switch>
         <Button onClick={() => handleModal(<Form />)}>What's your Reason?</Button>
       </Router>

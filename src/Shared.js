@@ -1,11 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
-import { Virtuoso } from "react-virtuoso";
-import { useForm } from "react-hook-form";
-import Loader from "./Loader";
-import useClipboard from "./useClipboard";
 
-import { gql, useLazyQuery, useMutation } from "@apollo/client";
+import Loader from "./Loader";
+import { BrowserRouter as Router, Switch, Route, Link, useParams } from "react-router-dom";
+
+import { gql, useQuery, useMutation } from "@apollo/client";
 
 const FlagSVG = (props) => {
   return (
@@ -16,21 +15,12 @@ const FlagSVG = (props) => {
 };
 
 const REASONS_LIST = gql`
-  query GetReasonsList($skip: Int, $first: Int) {
-    reasonsList(
-      skip: $skip
-      first: $first
-      orderBy: createdAt_DESC
-      filter: { reported: { is_empty: true } }
-    ) {
-      count
-      items {
-        country
-        id
-        initials
-        reason
-        reported
-      }
+  query GetReason($id: ID) {
+    reason(id: $id) {
+      id
+      initials
+      reason
+      country
     }
   }
 `;
@@ -44,51 +34,16 @@ const REASON_UPDATE = gql`
   }
 `;
 
-const random = (min, max) => {
-  return Math.floor(Math.random() * (max - min) + min);
-};
-
-const firstRandom = random(1, 10000);
-
 const RandomPage = () => {
+  let { id } = useParams();
+
   const [pressedReason, setPressedReason] = useState(null);
 
-  const [submitSearch, { called, loading, error, data }] = useLazyQuery(REASONS_LIST, {
+  const { loading, error, data } = useQuery(REASONS_LIST, {
     variables: {
-      skip: firstRandom,
-      first: 1
+      id: id
     }
   });
-
-  const [isCopied, handleCopy] = useClipboard(3000);
-
-  useEffect(() => {
-    // Update the document title using the browser API
-    submitSearch({
-      variables: {
-        skip: firstRandom,
-        first: 1
-      }
-    });
-  }, []);
-
-  const onSubmit = () => {
-    submitSearch({
-      variables: {
-        skip: random(0, data.reasonsList.count),
-        first: 1
-      }
-    });
-  };
-
-  const onShare = () => {
-    submitSearch({
-      variables: {
-        skip: random(0, data.reasonsList.count),
-        first: 1
-      }
-    });
-  };
 
   const [updateReason] = useMutation(REASON_UPDATE, {
     refetchQueries: ["GetReasonsList"]
@@ -124,7 +79,7 @@ const RandomPage = () => {
       </Section>
     );
 
-  const item = data.reasonsList.items[0];
+  const item = data.reason;
 
   const seed = Math.floor(Math.abs(Math.sin(Date.now() + 1) * 16777215) % 16777215).toString(16);
 
@@ -147,13 +102,6 @@ const RandomPage = () => {
             </ReasonInfo>
           </Box>
         </BoxWrapper>
-        <div>
-          <Button onClick={() => onSubmit()}>Randomize</Button>
-          <ShareButton onClick={() => handleCopy(`https://amillionreasonstostay.com/${item.id}`)}>
-            Copy Link
-          </ShareButton>
-        </div>
-        <p>{isCopied ? "Copied" : ""}</p>
       </Wrapper>
     </Section>
   );
@@ -170,7 +118,7 @@ const Button = styled.button`
   border: 3px solid black;
   padding: 10px 20px;
   border-radius: 20px;
-  font-size: 14px;
+  font-size: 20px;
   background-image: -webkit-gradient(
     linear,
     left top,
@@ -180,16 +128,6 @@ const Button = styled.button`
     to(#fcd65a)
   );
   background-image: linear-gradient(90deg, #e84393, #f28874 38%, #fcd65a 71%);
-`;
-
-const ShareButton = styled.a`
-  border: 3px solid black;
-  padding: 10px 20px;
-  border-radius: 20px;
-  font-size: 14px;
-  color: white;
-  text-decoration: none;
-  cursor: pointer;
 `;
 
 const Section = styled.section`
