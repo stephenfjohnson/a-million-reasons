@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import { Virtuoso } from "react-virtuoso";
+import { useForm } from "react-hook-form";
 import Loader from "./Loader";
 
-import { gql, useQuery, useMutation } from "@apollo/client";
+import { gql, useLazyQuery, useMutation } from "@apollo/client";
 
 const FlagSVG = (props) => {
   return (
@@ -13,28 +14,13 @@ const FlagSVG = (props) => {
   );
 };
 
-// const REASONS_LIST = gql`
-//   query GetReasonsList {
-//     reasonsList(orderBy: createdAt_DESC) {
-//       count
-//       items {
-//         country
-//         id
-//         initials
-//         reason
-//         reported
-//       }
-//     }
-//   }
-// `;
-
 const REASONS_LIST = gql`
-  query GetReasonsList($skip: Int, $first: Int) {
+  query GetReasonsList($skip: Int, $first: Int, $reasonContains: String) {
     reasonsList(
       skip: $skip
       first: $first
       orderBy: createdAt_DESC
-      filter: { reported: { is_empty: true } }
+      filter: { reported: { is_empty: true }, reason: { contains: $reasonContains } }
     ) {
       count
       items {
@@ -59,12 +45,24 @@ const REASON_UPDATE = gql`
 
 const ReasonsList = () => {
   const [pressedReason, setPressedReason] = useState(null);
-  const { loading, error, data, refetch, fetchMore } = useQuery(REASONS_LIST, {
+  const [submitSearch, { called, loading, error, data }] = useLazyQuery(REASONS_LIST, {
     variables: {
       skip: 0,
-      first: 4000
+      first: 4000,
+      reasonContains: ""
     }
   });
+
+  const { register, handleSubmit, watch, errors } = useForm();
+  const onSubmit = (data) => {
+    submitSearch({
+      variables: {
+        skip: 0,
+        first: 4000,
+        reasonContains: data.search
+      }
+    });
+  };
 
   const [updateReason] = useMutation(REASON_UPDATE, {
     refetchQueries: ["GetReasonsList"]
@@ -78,68 +76,29 @@ const ReasonsList = () => {
         reported: true
       }
     });
-    // refetch();
   };
 
-  // const onFetchMore = () => {
-  //   // const offset = data && data.reasonsList.items ? data.reasonsList.items.length : 0;
-  //   console.log(data.reasonsList.items.length);
+  const SearchForm = () => {
+    return (
+      <Form style={{ paddingTop: 200 }} onSubmit={handleSubmit(onSubmit)}>
+        {/* include validation with required or other standard HTML validation rules */}
+        <input name="search" placeholder="Fuzzy Socks" ref={register({ required: true })} />
+        {/* errors will return when field validation fails  */}
+        {errors.exampleRequired && <span>This field is required</span>}
 
-  //   refetch({
-  //     variables: {
-  //       first: data.reasonsList.items.length + 10
-  //     }
-  //   });
-  //   // fetchMore({
-  //   //   variables: {
-  //   //     // skip: data && data.reasonsList.items ? data.reasonsList.items.length : 0
-  //   //     first: data.reasonsList.items.length + 10
-  //   //   }
-  //   // });
-  // };
-
-  // const isPageBottom = usePageBottom();
-
-  // useEffect(() => {
-  //   // if no data or user hasn't scroll to the bottom, don't get more data
-  //   // if (!isPageBottom || !data) return;
-  //   // otherwise, get more posts
-  //   console.log(`Fetching More Posts`);
-  //   // onFetchMore();
-  //   setFirstItems(firstItems + 10);
-  //   console.log(firstItems);
-
-  //   // refetch();
-
-  //   // fetchMore({
-  //   //   variables: {
-  //   //     // skip: data && data.reasonsList.items ? data.reasonsList.items.length : 0,
-  //   //     // skip: data && data.reasonsList.items ? data.reasonsList.items.length : 0,
-  //   //     skip: 50,
-  //   //     // first: firstItems
-  //   //     first: 50
-  //   //   }
-  //   // });
-  // }, []);
-
-  // useEffect(() => {
-  // if (messageRef.current) {
-  //   messageRef.current.scrollIntoView({
-  //     behavior: "smooth",
-  //     block: "end",
-  //     inline: "nearest"
-  //   });
-  // }
-  // return;
-  // }, [data]);
+        <input type="submit" value="Search" />
+      </Form>
+    );
+  };
 
   if (loading)
     return (
       <Section>
-        <WrapperLoader>
-          <Loader />
-          <p>Loading Reasons...</p>
-        </WrapperLoader>
+        <Wrapper>
+          <Center>
+            <Loader />
+          </Center>
+        </Wrapper>
       </Section>
     );
 
@@ -152,13 +111,19 @@ const ReasonsList = () => {
       </Section>
     );
 
+  if (data === undefined)
+    return (
+      <Section>
+        <Wrapper>
+          <SearchForm />
+        </Wrapper>
+      </Section>
+    );
+
   const items = data.reasonsList.items;
 
-  // console.log(data.reasonsList.items);
-  // console.log(data.reasonsList.items.length);
-
   const ListContainer = ({ listRef, children, className, style }) => (
-    <div ref={listRef} className={className} style={{ ...style, paddingTop: "190px" }}>
+    <div ref={listRef} className={className} style={{ ...style, paddingTop: "10px" }}>
       {children}
     </div>
   );
@@ -166,6 +131,7 @@ const ReasonsList = () => {
   return (
     <Section>
       <Wrapper>
+        <SearchForm />
         <Virtuoso
           ListContainer={ListContainer}
           overscan={200}
@@ -202,7 +168,7 @@ const ReasonsList = () => {
         />
       </Wrapper>
       <Count>
-        <div>{data.reasonsList.count.toLocaleString()} Reasons</div>
+        <div>{data.reasonsList.count} Reasons</div>
       </Count>
     </Section>
   );
@@ -213,11 +179,11 @@ const Center = styled.div`
   align-items: center;
 `;
 
-const Reasons = () => {
+const Search = () => {
   return <ReasonsList />;
 };
 
-export default Reasons;
+export default Search;
 
 const Section = styled.section`
   width: 100%;
@@ -226,15 +192,7 @@ const Section = styled.section`
 `;
 
 const Wrapper = styled.div`
-  padding: 0 10px;
-  max-width: 400px;
-  height: 100vh;
-  width: 100%;
-  flex-direction: column;
-`;
-
-const WrapperLoader = styled.div`
-  padding: 0 10px;
+  padding: 10px;
   max-width: 400px;
   height: 100vh;
   width: 100%;
@@ -299,5 +257,29 @@ const Flag = styled.button`
   }
   svg {
     margin-right: 4px;
+  }
+`;
+
+const Form = styled.form`
+  max-width: 500px;
+  width: 100%;
+  margin: 0 auto;
+  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-rows: auto;
+  grid-column-gap: 20px;
+  grid-row-gap: 0px;
+  input {
+    width: 100%;
+    border: none;
+    border-radius: 20px;
+    padding: 10px 20px;
+    box-sizing: border-box;
+    font-size: 16px;
+    flex: 2fr;
+    background: transparent;
+    border: 2px solid white;
+    color: white;
   }
 `;

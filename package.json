@@ -16,6 +16,7 @@
     "react-ga": "3.3.0",
     "react-hook-form": "6.9.6",
     "react-paginate": "6.5.0",
+    "react-router-dom": "5.2.0",
     "react-scripts": "3.4.3",
     "react-virtuoso": "0.20.3",
     "resize-observer-polyfill": "1.5.1",
