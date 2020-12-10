@@ -8,7 +8,7 @@ const Modal = () => {
   if (modal) {
     return ReactDOM.createPortal(
       <ModalStyle>
-        <div>
+        <div style={{ height: "100%" }}>
           <button className="close" onClick={() => handleModal()}>
             &times;
           </button>
@@ -32,7 +32,8 @@ const ModalStyle = styled.div`
   justify-content: center;
   align-items: center;
   background: rgba(0, 0, 0, 0.9);
-  z-index: 2;
+  z-index: 500;
+  overflow-y: auto;
   button.close {
     background: transparent;
     color: white;
