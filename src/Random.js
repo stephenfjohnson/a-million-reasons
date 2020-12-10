@@ -1,7 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
-import { Virtuoso } from "react-virtuoso";
-import { useForm } from "react-hook-form";
 import Loader from "./Loader";
 import useClipboard from "./useClipboard";
 

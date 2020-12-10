@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import { Virtuoso } from "react-virtuoso";
 import Loader from "./Loader";
+import useClipboard from "./useClipboard";
 
 import { gql, useQuery, useMutation } from "@apollo/client";
 
@@ -66,6 +67,8 @@ const ReasonsList = () => {
     });
   };
 
+  const [isCopied, handleCopy] = useClipboard(3000);
+
   if (loading)
     return (
       <Section>
@@ -117,13 +120,22 @@ const ReasonsList = () => {
                   style={{ border: `4px solid #${seed}` }}
                   onClick={() => setPressedReason(items[index].id)}
                 >
-                  <Flag
-                    onClick={() => onFlag(items[index].id)}
+                  <SettingWrapper
                     style={{ display: pressedReason === items[index].id ? "flex" : "none" }}
                   >
-                    <FlagSVG />
-                    <p>report</p>
-                  </Flag>
+                    <Setting
+                      onClick={() =>
+                        handleCopy(`https://amillionreasonstostay.com/${items[index].id}`)
+                      }
+                    >
+                      <FlagSVG />
+                      <p>share</p>
+                    </Setting>
+                    <Setting onClick={() => onFlag(items[index].id)}>
+                      <FlagSVG />
+                      <p>report</p>
+                    </Setting>
+                  </SettingWrapper>
                   <ReasonText>{items[index].reason}</ReasonText>
                   <ReasonInfo>
                     <p>{items[index].initials}</p>
@@ -216,14 +228,29 @@ const ReasonInfo = styled.div`
   font-weight: bold;
 `;
 
-const Flag = styled.button`
+const SettingWrapper = styled.div`
+  position: absolute;
+  width: 100%;
+  display: none;
+  flex-direction: row;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  justify-content: space-between;
+  padding: 0;
+  display: block;
+`;
+
+const Setting = styled.button`
   border: none;
   background: none;
-  top: 10px;
+  /* top: 10px;
   right: 5px;
-  position: absolute;
+  position: absolute; */
+  display: flex;
   flex-direction: row;
-  display: none;
+  padding: 10px;
   p {
     color: white;
     font-size: 10px;
