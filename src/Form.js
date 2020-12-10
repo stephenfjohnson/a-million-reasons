@@ -11,14 +11,8 @@ const filter = new Filter();
 filter.addWords("kill", "Kill", "murder", "Murder", "death", "Death");
 
 const REASON_CREATE = gql`
-  mutation CreateReason(
-    $reason: String!
-    $country: String!
-    $initials: String!
-  ) {
-    reasonCreate(
-      data: { reason: $reason, country: $country, initials: $initials }
-    ) {
+  mutation CreateReason($reason: String!, $country: String!, $initials: String!, $email: String) {
+    reasonCreate(data: { reason: $reason, country: $country, initials: $initials, email: $email }) {
       id
       reason
     }
@@ -28,27 +22,19 @@ const REASON_CREATE = gql`
 yup.addMethod(yup.string, "profaneCheck", function (errorMessage) {
   return this.test(`test-card-type`, errorMessage, function (value) {
     const { path, createError } = this;
-    return (
-      !filter.isProfane(value) || createError({ path, message: errorMessage })
-    );
+    return !filter.isProfane(value) || createError({ path, message: errorMessage });
   });
 });
 
 const schema = yup.object().shape({
-  reason: yup
-    .string()
-    .required()
-    .profaneCheck("Please do not include Profanity")
-    .required(),
-  country: yup
-    .string()
-    .profaneCheck("Please do not include Profanity")
-    .required(),
+  reason: yup.string().required().profaneCheck("Please do not include Profanity").required(),
+  country: yup.string().profaneCheck("Please do not include Profanity").required(),
   initials: yup
     .string()
     .max(4, "Must be less than 4 characters")
     .profaneCheck("Please do not include Profanity")
-    .required()
+    .required(),
+  email: yup.string().email("Please add a valid email")
 });
 
 const Form = () => {
@@ -67,7 +53,8 @@ const Form = () => {
       variables: {
         reason: values.reason,
         country: values.country,
-        initials: values.initials
+        initials: values.initials,
+        email: values.email
       }
     });
     handleModal();
@@ -87,9 +74,13 @@ const Form = () => {
       <input name="initials" placeholder="Your Initails" ref={register} />
       {errors.initials && errors.initials.message}
 
+      <p style={{ color: "lightpink" }}>Get updates on the app and other cool stuff!</p>
+      <input name="email" placeholder="Email (Optional)" ref={register} />
+      {errors.email && errors.email.message}
+
       <p style={{ fontSize: "12px" }}>
-        Your submission is anonymous but it may be so awesome that we will want
-        to share it on social media and print materials.
+        Your submission is anonymous but it may be so awesome that we will want to share it on
+        social media and print materials. Your email will only be used for updates and never spam.
       </p>
 
       <button type="submit">Submit &#9829;</button>
