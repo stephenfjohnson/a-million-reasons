@@ -13,21 +13,6 @@ const FlagSVG = (props) => {
   );
 };
 
-// const REASONS_LIST = gql`
-//   query GetReasonsList {
-//     reasonsList(orderBy: createdAt_DESC) {
-//       count
-//       items {
-//         country
-//         id
-//         initials
-//         reason
-//         reported
-//       }
-//     }
-//   }
-// `;
-
 const REASONS_LIST = gql`
   query GetReasonsList($skip: Int, $first: Int) {
     reasonsList(
@@ -59,6 +44,7 @@ const REASON_UPDATE = gql`
 
 const ReasonsList = () => {
   const [pressedReason, setPressedReason] = useState(null);
+  const [startIndex, setStartIndex] = useState(0);
   const { loading, error, data, refetch, fetchMore } = useQuery(REASONS_LIST, {
     variables: {
       skip: 0,
@@ -78,60 +64,7 @@ const ReasonsList = () => {
         reported: true
       }
     });
-    // refetch();
   };
-
-  // const onFetchMore = () => {
-  //   // const offset = data && data.reasonsList.items ? data.reasonsList.items.length : 0;
-  //   console.log(data.reasonsList.items.length);
-
-  //   refetch({
-  //     variables: {
-  //       first: data.reasonsList.items.length + 10
-  //     }
-  //   });
-  //   // fetchMore({
-  //   //   variables: {
-  //   //     // skip: data && data.reasonsList.items ? data.reasonsList.items.length : 0
-  //   //     first: data.reasonsList.items.length + 10
-  //   //   }
-  //   // });
-  // };
-
-  // const isPageBottom = usePageBottom();
-
-  // useEffect(() => {
-  //   // if no data or user hasn't scroll to the bottom, don't get more data
-  //   // if (!isPageBottom || !data) return;
-  //   // otherwise, get more posts
-  //   console.log(`Fetching More Posts`);
-  //   // onFetchMore();
-  //   setFirstItems(firstItems + 10);
-  //   console.log(firstItems);
-
-  //   // refetch();
-
-  //   // fetchMore({
-  //   //   variables: {
-  //   //     // skip: data && data.reasonsList.items ? data.reasonsList.items.length : 0,
-  //   //     // skip: data && data.reasonsList.items ? data.reasonsList.items.length : 0,
-  //   //     skip: 50,
-  //   //     // first: firstItems
-  //   //     first: 50
-  //   //   }
-  //   // });
-  // }, []);
-
-  // useEffect(() => {
-  // if (messageRef.current) {
-  //   messageRef.current.scrollIntoView({
-  //     behavior: "smooth",
-  //     block: "end",
-  //     inline: "nearest"
-  //   });
-  // }
-  // return;
-  // }, [data]);
 
   if (loading)
     return (
@@ -154,9 +87,6 @@ const ReasonsList = () => {
 
   const items = data.reasonsList.items;
 
-  // console.log(data.reasonsList.items);
-  // console.log(data.reasonsList.items.length);
-
   const ListContainer = ({ listRef, children, className, style }) => (
     <div ref={listRef} className={className} style={{ ...style, paddingTop: "190px" }}>
       {children}
@@ -169,8 +99,12 @@ const ReasonsList = () => {
         <Virtuoso
           ListContainer={ListContainer}
           overscan={200}
+          initialTopMostItemIndex={startIndex}
           style={{ width: "100%", height: "100%", paddingTop: "50px" }}
           totalCount={data.reasonsList.items.length}
+          rangeChanged={({ startIndex, endIndex }) => {
+            setStartIndex(startIndex);
+          }}
           item={(index) => {
             const seed = Math.floor(Math.abs(Math.sin(index + 1) * 16777215) % 16777215).toString(
               16

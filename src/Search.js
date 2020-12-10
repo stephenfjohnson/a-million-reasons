@@ -45,6 +45,8 @@ const REASON_UPDATE = gql`
 
 const ReasonsList = () => {
   const [pressedReason, setPressedReason] = useState(null);
+  const [startIndex, setStartIndex] = useState(0);
+
   const [submitSearch, { called, loading, error, data }] = useLazyQuery(REASONS_LIST, {
     variables: {
       skip: 0,
@@ -136,7 +138,11 @@ const ReasonsList = () => {
           ListContainer={ListContainer}
           overscan={200}
           style={{ width: "100%", height: "100%", paddingTop: "50px" }}
+          initialTopMostItemIndex={startIndex}
           totalCount={data.reasonsList.items.length}
+          rangeChanged={({ startIndex, endIndex }) => {
+            setStartIndex(startIndex);
+          }}
           item={(index) => {
             const seed = Math.floor(Math.abs(Math.sin(index + 1) * 16777215) % 16777215).toString(
               16
