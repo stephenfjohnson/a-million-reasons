@@ -64,16 +64,16 @@ const schema = yup.object().shape({
   reason: yup
     .string()
     .required()
-    .profaneCheck("Please do not include Profanity")
+    .profaneCheck("Certain words and phrases have been banned to create the safest possible experience for all. If you see something as potentially triggering, the report button is available.")
     .required(),
   country: yup
     .string()
-    .profaneCheck("Please do not include Profanity")
+    .profaneCheck("Certain words and phrases have been banned to create the safest possible experience for all. If you see something as potentially triggering, the report button is available.")
     .required(),
   initials: yup
     .string()
     .max(4, "Must be less than 4 characters")
-    .profaneCheck("Please do not include Profanity")
+    .profaneCheck("Certain words and phrases have been banned to create the safest possible experience for all. If you see something as potentially triggering, the report button is available.")
     .required(),
   email: yup.string().email("Please add a valid email")
 });
