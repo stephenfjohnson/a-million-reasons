@@ -112,7 +112,7 @@ const Form = () => {
       {errors.country && errors.country.message}
 
       <p>Initials</p>
-      <input name="initials" placeholder="Your Initails" ref={register} />
+      <input name="initials" placeholder="Your Initials" ref={register} />
       {errors.initials && errors.initials.message}
 
       <p style={{ color: "lightpink" }}>
