@@ -27,24 +27,26 @@ filter.addWords(
   "seggs",
   "Seggsy",
   "Rape",
-  "rape"
+  "rape",
+  "Masturbate",
+  "masturbate",
+  "Railed",
+  "railed",
+  "Masturbation",
+  "masturbation",
+  "Masterbate",
+  "masterbate",
+  "Masterbating",
+  "masterbating",
+  "Masturbating",
+  "masturbating",
+  "Boobies",
+  "boobies"
 );
 
 const REASON_CREATE = gql`
-  mutation CreateReason(
-    $reason: String!
-    $country: String!
-    $initials: String!
-    $email: String
-  ) {
-    reasonCreate(
-      data: {
-        reason: $reason
-        country: $country
-        initials: $initials
-        email: $email
-      }
-    ) {
+  mutation CreateReason($reason: String!, $country: String!, $initials: String!, $email: String) {
+    reasonCreate(data: { reason: $reason, country: $country, initials: $initials, email: $email }) {
       id
       reason
     }
@@ -54,9 +56,7 @@ const REASON_CREATE = gql`
 yup.addMethod(yup.string, "profaneCheck", function (errorMessage) {
   return this.test(`test-card-type`, errorMessage, function (value) {
     const { path, createError } = this;
-    return (
-      !filter.isProfane(value) || createError({ path, message: errorMessage })
-    );
+    return !filter.isProfane(value) || createError({ path, message: errorMessage });
   });
 });
 
@@ -64,16 +64,22 @@ const schema = yup.object().shape({
   reason: yup
     .string()
     .required()
-    .profaneCheck("Certain words and phrases have been banned to create the safest possible experience for all. If you see something as potentially triggering, the report button is available.")
+    .profaneCheck(
+      "Certain words and phrases have been banned to create the safest possible experience for all. If you see something as potentially triggering, the report button is available."
+    )
     .required(),
   country: yup
     .string()
-    .profaneCheck("Certain words and phrases have been banned to create the safest possible experience for all. If you see something as potentially triggering, the report button is available.")
+    .profaneCheck(
+      "Certain words and phrases have been banned to create the safest possible experience for all. If you see something as potentially triggering, the report button is available."
+    )
     .required(),
   initials: yup
     .string()
     .max(4, "Must be less than 4 characters")
-    .profaneCheck("Certain words and phrases have been banned to create the safest possible experience for all. If you see something as potentially triggering, the report button is available.")
+    .profaneCheck(
+      "Certain words and phrases have been banned to create the safest possible experience for all. If you see something as potentially triggering, the report button is available."
+    )
     .required(),
   email: yup.string().email("Please add a valid email")
 });
@@ -115,16 +121,13 @@ const Form = () => {
       <input name="initials" placeholder="Your Initials" ref={register} />
       {errors.initials && errors.initials.message}
 
-      <p style={{ color: "lightpink" }}>
-        Get updates on the app and other cool stuff!
-      </p>
+      <p style={{ color: "lightpink" }}>Get updates on the app and other cool stuff!</p>
       <input name="email" placeholder="Email (Optional)" ref={register} />
       {errors.email && errors.email.message}
 
       <p style={{ fontSize: "12px" }}>
-        Your submission is anonymous but it may be so awesome that we will want
-        to share it on social media and print materials. Your email will only be
-        used for updates and never spam.
+        Your submission is anonymous but it may be so awesome that we will want to share it on
+        social media and print materials. Your email will only be used for updates and never spam.
       </p>
 
       <button type="submit">Submit &#9829;</button>
