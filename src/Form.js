@@ -41,7 +41,11 @@ filter.addWords(
   "Masturbating",
   "masturbating",
   "Boobies",
-  "boobies"
+  "boobies",
+  "Spite",
+  "spite",
+  "Spite",
+  "spite"
 );
 
 const REASON_CREATE = gql`

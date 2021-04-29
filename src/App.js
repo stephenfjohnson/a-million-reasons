@@ -22,7 +22,8 @@ const App = () => {
           <div className="header">
             <h1>A Million Reasons To Stay Alive</h1>
             <p>
-              Made By <a href="https://www.tiktok.com/@karlynnbekind">KarlynnBeKind</a>
+              Made By{" "}
+              <a href="https://www.youtube.com/channel/UCr-vFpHCOglpHgJLQlvE_pQ">KarlynnBeKind</a>
             </p>
             <Nav>
               <ul>
