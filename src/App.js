@@ -23,7 +23,7 @@ const App = () => {
             <h1>A Million Reasons To Stay Alive</h1>
             <p>
               Made By{" "}
-              <a href="https://www.youtube.com/channel/UCr-vFpHCOglpHgJLQlvE_pQ">KarlynnBeKind</a>
+              <a href="https://www.youtube.com/channel/UCr-vFpHCOglpHgJLQlvE_pQ">Karlynn King</a>
             </p>
             <Nav>
               <ul>
